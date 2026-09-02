@@ -166,7 +166,8 @@
 
       updateButtonStyles(null);
 
-      if (inputEl.value && val < 100) {
+      // Show error ONLY when a number is typed and it's less than 100
+      if (inputEl.value !== '' && val < 100) {
         showAmountError();
         currentAmount = val || 0;
       } else if (val >= 100) {
@@ -202,7 +203,7 @@
     }
 
     function updateTotal() {
-      document.getElementById('displayTotal').innerText = `₹${currentAmount.toLocaleString('en-IN')}`;
+      document.getElementById('displayTotal').innerText = `₹${currentAmount > 0 ? currentAmount.toLocaleString('en-IN') : 0}`;
     }
 
     function processBooking(e) {
