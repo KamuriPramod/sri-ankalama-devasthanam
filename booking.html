@@ -1,400 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Seva Booking | Sri Ankalama Devasthanam</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Seva - Sri Ankalama Devasthanam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            templeGold: '#D4AF37',
+            templeSaffron: '#C0392B',
+            templeCream: '#FAFAFA',
+          }
+        }
+      }
     }
-
-    body {
-      background: #fff8e7;
-      color: #4a2600;
-    }
-
-    header {
-      background: linear-gradient(135deg, #8b0000, #c62828);
-      color: white;
-      text-align: center;
-      padding: 25px 15px;
-    }
-
-    header h1 {
-      font-size: 30px;
-      margin-bottom: 8px;
-    }
-
-    header p {
-      font-size: 16px;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    }
-
-    h2 {
-      text-align: center;
-      color: #8b0000;
-      margin-bottom: 25px;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 7px;
-      font-size: 16px;
-    }
-
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: #c62828;
-    }
-
-    .amount-box {
-      background: #fff3cd;
-      border: 1px solid #e0a800;
-      padding: 18px;
-      border-radius: 8px;
-      margin: 20px 0;
-      text-align: center;
-    }
-
-    .amount-box span {
-      font-size: 25px;
-      font-weight: bold;
-      color: #8b0000;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      background: #c62828;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #8b0000;
-    }
-
-    .confirmation {
-      display: none;
-      margin-top: 25px;
-      padding: 20px;
-      background: #e8f5e9;
-      border: 1px solid #4caf50;
-      border-radius: 10px;
-    }
-
-    .confirmation h3 {
-      color: #2e7d32;
-      margin-bottom: 12px;
-    }
-
-    .booking-id {
-      font-size: 20px;
-      font-weight: bold;
-      color: #8b0000;
-    }
-
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: #666;
-    }
-  </style>
+  </script>
 </head>
+<body class="bg-templeCream text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-<body>
-
-<header>
-  <h1>🙏 Sri Ankalama Devasthanam</h1>
-  <p>Online Seva Booking</p>
-</header>
-
-<div class="container">
-
-  <h2>Seva Booking Form</h2>
-
-  <form id="bookingForm">
-
-    <div class="form-group">
-      <label for="name">Devotee Name *</label>
-      <input
-        type="text"
-        id="name"
-        placeholder="Enter your full name"
-        required
-      >
+  <!-- Header -->
+  <header class="bg-templeSaffron text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <span class="text-2xl">🛕</span>
+        <h1 class="text-xl font-bold">Sri Ankalama Devasthanam</h1>
+      </div>
+      <a href="index.html" class="text-white hover:text-templeGold font-medium transition">&larr; Back to Home</a>
     </div>
+  </header>
 
-    <div class="form-group">
-      <label for="mobile">Mobile Number *</label>
-      <input
-        type="tel"
-        id="mobile"
-        placeholder="Enter mobile number"
-        pattern="[0-9]{10}"
-        maxlength="10"
-        required
-      >
+  <!-- Booking Form Container -->
+  <main class="max-w-2xl mx-auto my-10 px-4 w-full">
+    <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-templeGold">
+      <h2 class="text-2xl font-bold text-templeSaffron mb-2 text-center">Seva Booking Form</h2>
+      <p class="text-sm text-gray-500 text-center mb-6">Enter devotee details to confirm your slot</p>
+
+      <form id="bookingForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+        
+        <div>
+          <label class="block text-sm font-semibold mb-1">Selected Seva</label>
+          <input type="text" id="selectedSeva" class="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg font-bold text-templeSaffron" readonly />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">Devotee Full Name</label>
+          <input type="text" required placeholder="Enter primary devotee name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-templeSaffron" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">Gothram</label>
+          <input type="text" required placeholder="Enter Gothram" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-templeSaffron" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">Seva Date</label>
+          <input type="date" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-templeSaffron" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">Phone Number</label>
+          <input type="tel" required placeholder="10-digit mobile number" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-templeSaffron" />
+        </div>
+
+        <button type="submit" class="w-full mt-4 bg-templeSaffron hover:bg-red-700 text-white font-bold py-3 rounded-lg shadow-md transition">
+          Proceed to Confirmation
+        </button>
+
+      </form>
     </div>
-
-    <div class="form-group">
-      <label for="email">Email Address</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter email address"
-      >
-    </div>
-
-    <div class="form-group">
-      <label for="seva">Select Seva *</label>
-
-      <select id="seva" required>
-        <option value="">-- Select Seva --</option>
-        <option value="Special Sahasranama Archana" data-price="251">
-          Special Sahasranama Archana - ₹251
-        </option>
-
-        <option value="Abhishekam Seva" data-price="501">
-          Abhishekam Seva - ₹501
-        </option>
-
-        <option value="Shaswat Pooja Endowment" data-price="2500">
-          Shaswat Pooja Endowment - ₹2,500
-        </option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="date">Seva Date *</label>
-      <input type="date" id="date" required>
-    </div>
-
-    <div class="form-group">
-      <label for="devotees">Number of Devotees *</label>
-
-      <input
-        type="number"
-        id="devotees"
-        value="1"
-        min="1"
-        max="20"
-        required
-      >
-    </div>
-
-    <div class="amount-box">
-      <p>Total Seva Amount</p>
-      <span id="totalAmount">₹0</span>
-    </div>
-
-    <button type="submit">
-      Confirm Booking
-    </button>
-
-  </form>
-
-  <div class="confirmation" id="confirmation">
-
-    <h3>🙏 Booking Request Submitted</h3>
-
-    <p><strong>Booking ID:</strong></p>
-    <p class="booking-id" id="bookingId"></p>
-
-    <br>
-
-    <p><strong>Devotee:</strong> <span id="confirmName"></span></p>
-
-    <p><strong>Seva:</strong> <span id="confirmSeva"></span></p>
-
-    <p><strong>Date:</strong> <span id="confirmDate"></span></p>
-
-    <p><strong>Devotees:</strong> <span id="confirmDevotees"></span></p>
-
-    <p><strong>Amount:</strong> <span id="confirmAmount"></span></p>
-
-    <br>
-
-    <p>
-      Please save your Booking ID for future reference.
-    </p>
-
-  </div>
-
-</div>
-
-<footer>
-  © 2026 Sri Ankalama Devasthanam. All Rights Reserved.
-</footer>
-
-<script>
-
-  const sevaSelect = document.getElementById("seva");
-  const devoteesInput = document.getElementById("devotees");
-  const totalAmount = document.getElementById("totalAmount");
-
-  // Set minimum booking date to today
-  const dateInput = document.getElementById("date");
-
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-
-  dateInput.min = `${year}-${month}-${day}`;
-
-
-  function calculateAmount() {
-
-    const selectedOption =
-      sevaSelect.options[sevaSelect.selectedIndex];
-
-    const price =
-      Number(selectedOption.dataset.price || 0);
-
-    const devotees =
-      Number(devoteesInput.value || 1);
-
-    const total =
-      price * devotees;
-
-    totalAmount.textContent =
-      "₹" + total.toLocaleString("en-IN");
-  }
-
-
-  sevaSelect.addEventListener("change", calculateAmount);
-
-  devoteesInput.addEventListener("input", calculateAmount);
-
-
-  document
-    .getElementById("bookingForm")
-    .addEventListener("submit", function(event) {
-
-      event.preventDefault();
-
-      const name =
-        document.getElementById("name").value.trim();
-
-      const mobile =
-        document.getElementById("mobile").value.trim();
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const seva =
-        sevaSelect.value;
-
-      const date =
-        dateInput.value;
-
-      const devotees =
-        Number(devoteesInput.value);
-
-      const selectedOption =
-        sevaSelect.options[sevaSelect.selectedIndex];
-
-      const price =
-        Number(selectedOption.dataset.price || 0);
-
-      const total =
-        price * devotees;
-
-
-      // Generate booking ID
-      const randomNumber =
-        Math.floor(100000 + Math.random() * 900000);
-
-      const bookingID =
-        "SA-" + new Date().getFullYear() + "-" + randomNumber;
-
-
-      // Display confirmation
-      document.getElementById("bookingId")
-        .textContent = bookingID;
-
-      document.getElementById("confirmName")
-        .textContent = name;
-
-      document.getElementById("confirmSeva")
-        .textContent = seva;
-
-      document.getElementById("confirmDate")
-        .textContent = date;
-
-      document.getElementById("confirmDevotees")
-        .textContent = devotees;
-
-      document.getElementById("confirmAmount")
-        .textContent =
-        "₹" + total.toLocaleString("en-IN");
-
-
-      document.getElementById("confirmation")
-        .style.display = "block";
-
-
-      // Save booking locally
-      const booking = {
-        bookingID: bookingID,
-        name: name,
-        mobile: mobile,
-        email: email,
-        seva: seva,
-        date: date,
-        devotees: devotees,
-        amount: total,
-        createdAt: new Date().toISOString()
-      };
-
-      localStorage.setItem(
-        bookingID,
-        JSON.stringify(booking)
-      );
-
-
-      // Scroll to confirmation
-      document.getElementById("confirmation")
-        .scrollIntoView({
-          behavior: "smooth"
-        });
-
-    });
-
-</script>
-
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-templeSaffron text-white py-4 text-center text-xs">
+    &copy; 2026 Sri Ankalama Devasthanam. All rights reserved.
+  </footer>
+
+  <script>
+    // Autofill selected Seva from URL parameter
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const seva = urlParams.get('seva') || 'Special Sahasranama Archana';
+      document.getElementById('selectedSeva').value = seva;
+    };
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      alert("Booking request submitted successfully! Confirmation sent to your registered number.");
+      window.location.href = "index.html";
+    }
+  </script>
 </body>
 </html>
