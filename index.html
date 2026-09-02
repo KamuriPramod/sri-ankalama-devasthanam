@@ -31,7 +31,6 @@
       </div>
       <nav class="hidden md:flex space-x-6 font-medium">
         <a href="#home" class="hover:text-templeGold transition">Home</a>
-        <a href="#about" class="hover:text-templeGold transition">About</a>
         <a href="#timings" class="hover:text-templeGold transition">Timings</a>
         <a href="#sevas" class="hover:text-templeGold transition">Sevas</a>
         <a href="#contact" class="hover:text-templeGold transition">Contact</a>
@@ -84,7 +83,7 @@
     </div>
   </section>
 
-  <!-- Sevas & Offerings Section -->
+  <!-- Sevas Section -->
   <section id="sevas" class="py-16 bg-gray-100">
     <div class="max-w-7xl mx-auto px-4">
       <h3 class="text-3xl font-bold text-center text-templeSaffron mb-10">Available Online Sevas</h3>
@@ -98,7 +97,7 @@
             <span class="text-2xl font-bold text-templeSaffron">₹251</span>
           </div>
           <div class="p-6 bg-gray-50 border-t">
-            <button onclick="openBooking('Special Archana')" class="w-full bg-templeGold hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg transition">Book Now</button>
+            <button onclick="openBooking('Special Sahasranama Archana')" class="w-full bg-templeGold hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg transition">Book Now</button>
           </div>
         </div>
 
@@ -122,7 +121,7 @@
             <span class="text-2xl font-bold text-templeSaffron">₹2,500</span>
           </div>
           <div class="p-6 bg-gray-50 border-t">
-            <button onclick="openBooking('Shaswat Pooja')" class="w-full bg-templeGold hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg transition">Book Now</button>
+            <button onclick="openBooking('Shaswat Pooja Endowment')" class="w-full bg-templeGold hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg transition">Book Now</button>
           </div>
         </div>
 
@@ -156,10 +155,10 @@
     </div>
   </footer>
 
-  <!-- Basic Script for Interactions -->
+  <!-- Fixed Navigation Script -->
   <script>
     function openBooking(sevaName) {
-      alert("Booking system initialized for: " + sevaName + ". Integration with payment gateway goes here.");
+      window.location.href = "booking.html?seva=" + encodeURIComponent(sevaName);
     }
   </script>
 </body>
