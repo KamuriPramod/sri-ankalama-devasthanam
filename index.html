@@ -54,8 +54,7 @@
 
           <div>
             <label class="block text-sm font-semibold mb-1">Or Enter Custom Amount (₹)</label>
-            <input type="number" id="customAmount" min="100" placeholder="Minimum amount ₹100" oninput="handleCustomInput()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-templeSaffron" />
-            <p id="amountError" class="hidden text-xs text-red-600 font-semibold mt-1">⚠️ Minimum donation amount is ₹100</p>
+            <input type="number" id="customAmount" min="1" placeholder="Enter any amount" oninput="handleCustomInput()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-templeSaffron" />
           </div>
 
           <div>
@@ -135,8 +134,6 @@
     
     const TEMPLE_UPI_ID = "6281063295@ybl"; 
     const TEMPLE_NAME = "Sri Ankalama Devasthanam";
-    
-    // PASTE YOUR GOOGLE SCRIPT WEB APP URL HERE:
     const GOOGLE_SHEET_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; 
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -149,7 +146,6 @@
     function selectPreset(amount) {
       currentAmount = amount;
       document.getElementById('customAmount').value = '';
-      hideAmountError();
       updateButtonStyles(amount);
       updateTotal();
       updateQRCode();
@@ -161,28 +157,13 @@
 
       updateButtonStyles(null);
 
-      if (inputEl.value !== '' && val < 100) {
-        showAmountError();
-        currentAmount = val || 0;
-      } else if (val >= 100) {
-        hideAmountError();
+      if (val > 0) {
         currentAmount = val;
       } else {
-        hideAmountError();
         currentAmount = 0;
       }
       updateTotal();
       updateQRCode();
-    }
-
-    function showAmountError() {
-      document.getElementById('amountError').classList.remove('hidden');
-      document.getElementById('customAmount').classList.add('border-red-500', 'focus:ring-red-500');
-    }
-
-    function hideAmountError() {
-      document.getElementById('amountError').classList.add('hidden');
-      document.getElementById('customAmount').classList.remove('border-red-500', 'focus:ring-red-500');
     }
 
     function updateButtonStyles(activeAmount) {
@@ -206,7 +187,7 @@
       const qrImg = document.getElementById('qrCodeImg');
       const mobilePayLink = document.getElementById('mobilePayLink');
 
-      if (currentAmount >= 100) {
+      if (currentAmount > 0) {
         const upiUrl = `upi://pay?pa=${encodeURIComponent(TEMPLE_UPI_ID)}&pn=${encodeURIComponent(TEMPLE_NAME)}&am=${currentAmount}&cu=INR`;
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
         
@@ -221,9 +202,8 @@
     async function processBooking(e) {
       e.preventDefault();
       
-      if (currentAmount < 100) {
-        alert("The minimum donation amount is ₹100. Please select an amount first.");
-        showAmountError();
+      if (currentAmount <= 0) {
+        alert("Please enter or select a donation amount.");
         return;
       }
 
@@ -239,7 +219,6 @@
         amount: currentAmount
       };
 
-      // Save submission data to Google Sheet if URL provided
       if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
         try {
           await fetch(GOOGLE_SHEET_URL, {
@@ -255,7 +234,6 @@
 
       const upiUrl = `upi://pay?pa=${encodeURIComponent(TEMPLE_UPI_ID)}&pn=${encodeURIComponent(TEMPLE_NAME)}&am=${currentAmount}&cu=INR`;
       
-      // Auto-open PhonePe/GPay on mobile browsers
       window.location.href = upiUrl;
 
       setTimeout(() => {
