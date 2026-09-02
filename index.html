@@ -73,12 +73,12 @@
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
           <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2">
             <span class="bg-templeSaffron text-white text-xs w-6 h-6 rounded-full flex items-center justify-center">2</span> 
-            Devotee Particulars <span class="text-xs font-normal text-gray-500">(Optional)</span>
+            Devotee Particulars
           </h3>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold mb-1">Primary Devotee Name (Optional)</label>
+              <label class="block text-sm font-semibold mb-1">Primary Devotee Name</label>
               <input type="text" id="devoteeName" placeholder="Full Name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-templeSaffron" />
             </div>
 
@@ -88,7 +88,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-semibold mb-1">Phone Number (Optional)</label>
+              <label class="block text-sm font-semibold mb-1">Phone Number</label>
               <input type="tel" id="phone" placeholder="10-digit Mobile Number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-templeSaffron" />
             </div>
 
@@ -99,26 +99,18 @@
           </div>
         </div>
 
-        <!-- Step 3: Payment Method -->
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-          <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2">
-            <span class="bg-templeSaffron text-white text-xs w-6 h-6 rounded-full flex items-center justify-center">3</span> 
-            Payment Mode
-          </h3>
+        <!-- Step 3: Dynamic UPI QR Code Section -->
+        <div id="upiSection" class="hidden bg-gray-50 p-6 rounded-xl border border-gray-200 text-center space-y-4">
+          <h3 class="text-lg font-bold text-gray-700">Scan QR Code to Pay</h3>
+          <p class="text-xs text-gray-500">Scan using PhonePe, Google Pay, Paytm, or BHIM UPI app</p>
 
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:border-templeSaffron">
-              <input type="radio" name="payment" value="UPI" checked class="text-templeSaffron focus:ring-templeSaffron" />
-              <span class="ml-2 font-medium text-sm">UPI / QR Code</span>
-            </label>
-            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:border-templeSaffron">
-              <input type="radio" name="payment" value="Card" class="text-templeSaffron focus:ring-templeSaffron" />
-              <span class="ml-2 font-medium text-sm">Credit / Debit Card</span>
-            </label>
-            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:border-templeSaffron">
-              <input type="radio" name="payment" value="NetBanking" class="text-templeSaffron focus:ring-templeSaffron" />
-              <span class="ml-2 font-medium text-sm">Net Banking</span>
-            </label>
+          <div class="flex justify-center my-3">
+            <img id="qrCodeImg" src="" alt="UPI QR Code" class="w-52 h-52 border-4 border-templeSaffron rounded-lg shadow-md p-2 bg-white" />
+          </div>
+
+          <div class="bg-white p-3 rounded-lg border border-gray-300 inline-block">
+            <span class="text-xs text-gray-500 block mb-1">Temple UPI ID:</span>
+            <span id="upiIdDisplay" class="font-mono font-bold text-templeSaffron text-base">6281063295@ybl</span>
           </div>
         </div>
 
@@ -129,7 +121,7 @@
             <div id="displayTotal" class="text-3xl font-extrabold text-templeSaffron">₹0</div>
           </div>
           <button type="submit" class="w-full md:w-auto bg-templeGold hover:bg-yellow-600 text-gray-900 font-extrabold px-8 py-4 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
-            Confirm & Pay Now
+            I Have Completed Payment
           </button>
         </div>
 
@@ -145,8 +137,13 @@
   <!-- Dynamic Scripts -->
   <script>
     let currentAmount = 0;
+    
+    // Set UPI ID
+    const TEMPLE_UPI_ID = "6281063295@ybl"; 
+    const TEMPLE_NAME = "Sri Ankalama Devasthanam";
 
     window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('upiIdDisplay').innerText = TEMPLE_UPI_ID;
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('sevaDate').setAttribute('min', today);
       document.getElementById('sevaDate').value = today;
@@ -158,6 +155,7 @@
       hideAmountError();
       updateButtonStyles(amount);
       updateTotal();
+      updateQRCode();
     }
 
     function handleCustomInput() {
@@ -166,7 +164,6 @@
 
       updateButtonStyles(null);
 
-      // Show error ONLY when a number is typed and it's less than 100
       if (inputEl.value !== '' && val < 100) {
         showAmountError();
         currentAmount = val || 0;
@@ -178,6 +175,7 @@
         currentAmount = 0;
       }
       updateTotal();
+      updateQRCode();
     }
 
     function showAmountError() {
@@ -206,6 +204,21 @@
       document.getElementById('displayTotal').innerText = `₹${currentAmount > 0 ? currentAmount.toLocaleString('en-IN') : 0}`;
     }
 
+    function updateQRCode() {
+      const upiSection = document.getElementById('upiSection');
+      const qrImg = document.getElementById('qrCodeImg');
+
+      if (currentAmount >= 100) {
+        // Generate UPI payload string for instant scanning
+        const upiUrl = `upi://pay?pa=${encodeURIComponent(TEMPLE_UPI_ID)}&pn=${encodeURIComponent(TEMPLE_NAME)}&am=${currentAmount}&cu=INR`;
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
+        qrImg.src = qrApiUrl;
+        upiSection.classList.remove('hidden');
+      } else {
+        upiSection.classList.add('hidden');
+      }
+    }
+
     function processBooking(e) {
       e.preventDefault();
       
@@ -216,7 +229,7 @@
       }
 
       const devotee = document.getElementById('devoteeName').value || 'Anonymous Devotee';
-      alert(`Offering Received!\n\nDevotee: ${devotee}\nAmount: ₹${currentAmount}\n\nThank you for your generous contribution.`);
+      alert(`Thank you ${devotee}!\n\nYour donation submission of ₹${currentAmount} to 6281063295@ybl has been recorded.`);
       window.location.reload();
     }
   </script>
